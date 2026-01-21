@@ -3,31 +3,6 @@
 import { motion } from "framer-motion";
 import { communityLinks } from "@/data/links";
 
-const asciiArt = `
- ██████╗██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗ 
-██╔════╝██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗
-██║     ██║   ██║██████╔╝███████╗██║   ██║██████╔╝
-██║     ██║   ██║██╔══██╗╚════██║██║   ██║██╔══██╗
-╚██████╗╚██████╔╝██║  ██║███████║╚██████╔╝██║  ██║
- ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝
-                     ██████╗███████╗██████╗ ██╗   ██╗
-                    ██╔════╝██╔════╝██╔══██╗██║   ██║
-                    ██║     █████╗  ██████╔╝██║   ██║
-                    ██║     ██╔══╝  ██╔══██╗██║   ██║
-                    ╚██████╗███████╗██████╔╝╚██████╔╝
-                     ╚═════╝╚══════╝╚═════╝  ╚═════╝ 
-`.trim();
-
-// Simpler version for mobile
-const asciiArtMobile = `
-╔═╗╦ ╦╦═╗╔═╗╔═╗╦═╗
-║  ║ ║╠╦╝╚═╗║ ║╠╦╝
-╚═╝╚═╝╩╚═╚═╝╚═╝╩╚═
-   ╔═╗╔═╗╔╗ ╦ ╦
-   ║  ║╣ ╠╩╗║ ║
-   ╚═╝╚═╝╚═╝╚═╝
-`.trim();
-
 export default function Hero() {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-16">
@@ -37,16 +12,14 @@ export default function Hero() {
         transition={{ duration: 0.6 }}
         className="text-center"
       >
-        {/* ASCII Art Title */}
-        <div className="mb-8 overflow-hidden">
-          {/* Desktop version */}
-          <pre className="ascii-art text-[#ededed] hidden sm:inline-block text-left">
-            {asciiArt}
-          </pre>
-          {/* Mobile version */}
-          <pre className="ascii-art text-[#ededed] sm:hidden inline-block text-left text-[0.5rem]">
-            {asciiArtMobile}
-          </pre>
+        {/* Large Title */}
+        <div className="mb-8">
+          <h1 className="font-mono text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter">
+            <span className="text-white">CURSOR</span>
+          </h1>
+          <h1 className="font-mono text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter mt-2">
+            <span className="text-[#737373]">CEBU</span>
+          </h1>
         </div>
 
         {/* Tagline */}
