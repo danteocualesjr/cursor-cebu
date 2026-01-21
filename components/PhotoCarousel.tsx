@@ -2,32 +2,32 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
-// Replace these with actual photos - add your images to public/gallery/
 const featuredPhotos = [
   {
     id: "1",
-    src: "/gallery/featured-1.jpg",
-    alt: "Cursor Community Cebu Workshop",
-    caption: "Workshop: Introduction to Cursor IDE",
+    src: "/gallery/event-2.png",
+    alt: "Cursor Community Cebu group photo",
+    caption: "Cursor Community Cebu Launch Meetup",
   },
   {
     id: "2",
-    src: "/gallery/featured-2.jpg",
-    alt: "Community Meetup",
-    caption: "Monthly Community Meetup",
+    src: "/gallery/event-4.png",
+    alt: "How to Vibe-Code presentation",
+    caption: "How to Vibe-Code With Cursor",
   },
   {
     id: "3",
-    src: "/gallery/featured-3.jpg",
-    alt: "Cafe Cursor Session",
-    caption: "Cafe Cursor: Code & Coffee",
+    src: "/gallery/event-3.png",
+    alt: "Organizers with Cursor banner",
+    caption: "Meet the Organizers",
   },
   {
     id: "4",
-    src: "/gallery/featured-4.jpg",
-    alt: "Hackathon",
-    caption: "Cursor Hackathon Cebu",
+    src: "/gallery/event-7.png",
+    alt: "Community organizers",
+    caption: "Our Amazing Community Team",
   },
 ];
 
@@ -60,28 +60,14 @@ export default function PhotoCarousel() {
             transition={{ duration: 0.5 }}
             className="absolute inset-0"
           >
-            {/* Placeholder - replace with actual Image component when photos are added */}
-            <div className="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] flex items-center justify-center">
-              <div className="text-center p-8">
-                <svg
-                  className="w-16 h-16 mx-auto text-[#333] mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <p className="text-[#555] text-sm">
-                  {featuredPhotos[currentIndex].caption}
-                </p>
-                <p className="text-[#444] text-xs mt-2">Drop photos to add</p>
-              </div>
-            </div>
+            <Image
+              src={featuredPhotos[currentIndex].src}
+              alt={featuredPhotos[currentIndex].alt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 896px"
+              priority={currentIndex === 0}
+            />
 
             {/* Caption overlay */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">

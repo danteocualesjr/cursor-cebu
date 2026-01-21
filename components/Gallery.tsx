@@ -2,44 +2,44 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
-// Placeholder images - replace with actual event photos
 const photos = [
   {
     id: "1",
-    src: "/gallery/placeholder-1.jpg",
-    alt: "Workshop session",
+    src: "/gallery/event-1.png",
+    alt: "Live coding demo",
     event: "Introduction to Cursor IDE Workshop",
   },
   {
     id: "2",
-    src: "/gallery/placeholder-2.jpg",
-    alt: "Community meetup",
-    event: "Launch Meetup",
+    src: "/gallery/event-2.png",
+    alt: "Community group photo",
+    event: "Cursor Community Cebu Launch Meetup",
   },
   {
     id: "3",
-    src: "/gallery/placeholder-3.jpg",
-    alt: "Cafe Cursor session",
-    event: "Cafe Cursor: Casual Coding",
+    src: "/gallery/event-3.png",
+    alt: "Team with Cursor banner",
+    event: "Meet the Organizers",
   },
   {
     id: "4",
-    src: "/gallery/placeholder-4.jpg",
-    alt: "Networking event",
-    event: "Community Networking",
+    src: "/gallery/event-4.png",
+    alt: "Vibe-Code presentation",
+    event: "How to Vibe-Code With Cursor",
   },
   {
     id: "5",
-    src: "/gallery/placeholder-5.jpg",
-    alt: "Presentation",
-    event: "AI Development Talk",
+    src: "/gallery/event-5.png",
+    alt: "Technical demo",
+    event: "Terraform & Infrastructure Talk",
   },
   {
     id: "6",
-    src: "/gallery/placeholder-6.jpg",
-    alt: "Group photo",
-    event: "Community Group Photo",
+    src: "/gallery/event-6.png",
+    alt: "Speaker presentation",
+    event: "Community Presentation",
   },
 ];
 
@@ -82,25 +82,13 @@ export default function Gallery() {
               className="relative aspect-square bg-[#111] border border-[#1f1f1f] rounded-xl overflow-hidden cursor-pointer group"
               onClick={() => setSelectedImage(photo.id)}
             >
-              {/* Placeholder - Replace with actual Image component when you have photos */}
-              <div className="w-full h-full bg-gradient-to-br from-[#1a1a1a] to-[#111] flex items-center justify-center">
-                <div className="text-center p-4">
-                  <svg
-                    className="w-12 h-12 mx-auto text-[#333] mb-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <p className="text-xs text-[#555]">Photo coming soon</p>
-                </div>
-              </div>
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 33vw"
+              />
 
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
@@ -130,27 +118,15 @@ export default function Gallery() {
                 className="relative max-w-4xl w-full aspect-video bg-[#111] rounded-xl overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Placeholder for actual image */}
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <svg
-                      className="w-24 h-24 mx-auto text-[#333] mb-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <p className="text-[#555]">
-                      {photos.find((p) => p.id === selectedImage)?.event}
-                    </p>
-                  </div>
-                </div>
+                {photos.find((p) => p.id === selectedImage) && (
+                <Image
+                  src={photos.find((p) => p.id === selectedImage)!.src}
+                  alt={photos.find((p) => p.id === selectedImage)!.alt}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                />
+              )}
 
                 {/* Close Button */}
                 <button
@@ -176,14 +152,14 @@ export default function Gallery() {
           )}
         </AnimatePresence>
 
-        {/* Coming Soon Note */}
+        {/* View More Note */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className="text-center text-[#737373] text-sm mt-8"
         >
-          More photos coming soon from our events!
+          Photos from Cursor Community Cebu events
         </motion.p>
       </div>
     </section>
