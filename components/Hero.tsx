@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { communityLinks } from "@/data/links";
+import PhotoCarousel from "./PhotoCarousel";
 
 export default function Hero() {
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-16">
+    <section className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,12 +83,21 @@ export default function Hero() {
           </a>
         </motion.div>
 
+        {/* Photo Carousel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+        >
+          <PhotoCarousel />
+        </motion.div>
+
         {/* Stats */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.6 }}
-          className="mt-16 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-center"
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-center"
         >
           <div>
             <div className="text-3xl sm:text-4xl font-bold font-mono">100+</div>
@@ -104,33 +114,6 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="text-[#737373]"
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

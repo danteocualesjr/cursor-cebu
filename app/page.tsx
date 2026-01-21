@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import PhotoStrip from "@/components/PhotoStrip";
 import Events from "@/components/Events";
 import Speakers from "@/components/Speakers";
 import Gallery from "@/components/Gallery";
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <PhotoStrip />
         <Events />
         <Speakers />
         <Gallery />
