@@ -23,12 +23,6 @@ const featuredPhotos = [
     alt: "Organizers with Cursor banner",
     caption: "Meet the Organizers",
   },
-  {
-    id: "4",
-    src: "/gallery/event-7.png",
-    alt: "Community organizers",
-    caption: "Our Amazing Community Team",
-  },
 ];
 
 export default function PhotoCarousel() {
