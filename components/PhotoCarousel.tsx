@@ -29,6 +29,16 @@ export default function PhotoCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Ensure currentIndex stays within bounds
+  const safeIndex = Math.min(currentIndex, featuredPhotos.length - 1);
+  const currentPhoto = featuredPhotos[safeIndex];
+
+  useEffect(() => {
+    if (currentIndex >= featuredPhotos.length) {
+      setCurrentIndex(0);
+    }
+  }, [currentIndex]);
+
   useEffect(() => {
     if (isHovered) return;
     const timer = setInterval(() => {
@@ -47,7 +57,7 @@ export default function PhotoCarousel() {
       <div className="relative aspect-video rounded-2xl overflow-hidden bg-[#111] border border-[#1f1f1f]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentIndex}
+            key={safeIndex}
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -55,18 +65,18 @@ export default function PhotoCarousel() {
             className="absolute inset-0"
           >
             <Image
-              src={featuredPhotos[currentIndex].src}
-              alt={featuredPhotos[currentIndex].alt}
+              src={currentPhoto.src}
+              alt={currentPhoto.alt}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 896px"
-              priority={currentIndex === 0}
+              priority={safeIndex === 0}
             />
 
             {/* Caption overlay */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
               <p className="text-white font-medium">
-                {featuredPhotos[currentIndex].caption}
+                {currentPhoto.caption}
               </p>
             </div>
           </motion.div>
@@ -125,7 +135,7 @@ export default function PhotoCarousel() {
             key={index}
             onClick={() => setCurrentIndex(index)}
             className={`w-2 h-2 rounded-full transition-all ${
-              index === currentIndex
+              index === safeIndex
                 ? "bg-white w-6"
                 : "bg-[#444] hover:bg-[#666]"
             }`}
