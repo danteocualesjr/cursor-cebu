@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { communityLinks } from "@/data/links";
-import PhotoCarousel from "./PhotoCarousel";
 
 export default function Hero() {
   return (
@@ -81,15 +80,6 @@ export default function Hero() {
             </svg>
             View Events
           </a>
-        </motion.div>
-
-        {/* Photo Carousel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-        >
-          <PhotoCarousel />
         </motion.div>
 
         {/* Stats */}
