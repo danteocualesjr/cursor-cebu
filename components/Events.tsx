@@ -36,20 +36,32 @@ export default function Events() {
   };
 
   return (
-    <section id="events" className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section id="events" className="relative py-24 px-4">
+      {/* Background effects */}
+      <div className="absolute inset-0 bg-dots opacity-30" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
+      
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold font-mono mb-4">
-            Events
+          <motion.span 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="inline-block text-purple-400 text-sm font-medium tracking-wider uppercase mb-4"
+          >
+            What&apos;s Happening
+          </motion.span>
+          <h2 className="text-4xl sm:text-5xl font-bold font-mono mb-6">
+            <span className="gradient-text-accent">Events</span>
           </h2>
-          <p className="text-[#a3a3a3] max-w-2xl mx-auto">
+          <p className="text-[#a3a3a3] max-w-2xl mx-auto text-lg">
             Join our workshops, meetups, hackathons, and Cafe Cursor sessions.
             Learn, connect, and build with AI-powered tools.
           </p>
@@ -57,12 +69,12 @@ export default function Events() {
 
         {/* Toggle: Upcoming / Past */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex bg-[#111] rounded-full p-1 border border-[#1f1f1f]">
+          <div className="inline-flex bg-[#111]/80 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
             <button
               onClick={() => setShowUpcoming(true)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 showUpcoming
-                  ? "bg-white text-black"
+                  ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
                   : "text-[#a3a3a3] hover:text-white"
               }`}
             >
@@ -70,9 +82,9 @@ export default function Events() {
             </button>
             <button
               onClick={() => setShowUpcoming(false)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
                 !showUpcoming
-                  ? "bg-white text-black"
+                  ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
                   : "text-[#a3a3a3] hover:text-white"
               }`}
             >
@@ -82,15 +94,15 @@ export default function Events() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
           {filterOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => setFilter(option.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border ${
                 filter === option.value
-                  ? "border-white text-white bg-[#1a1a1a]"
-                  : "border-[#333] text-[#a3a3a3] hover:border-[#555] hover:text-white"
+                  ? "border-purple-500/50 text-white bg-purple-500/20 shadow-lg shadow-purple-500/10"
+                  : "border-white/10 text-[#a3a3a3] hover:border-white/20 hover:text-white hover:bg-white/5"
               }`}
             >
               {option.label}
@@ -106,7 +118,7 @@ export default function Events() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="grid md:grid-cols-2 gap-6"
+            className="grid md:grid-cols-2 gap-8"
           >
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
@@ -115,20 +127,25 @@ export default function Events() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-[#111] border border-[#1f1f1f] rounded-xl overflow-hidden card-hover"
+                  className="group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)]"
                 >
+                  {/* Gradient border on hover */}
+                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                    <div className="absolute inset-[0] rounded-2xl bg-gradient-to-r from-purple-500/20 via-transparent to-cyan-500/20" />
+                  </div>
+                  
                   {/* Event Image */}
-                  <div className="h-40 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] relative">
+                  <div className="h-48 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] relative overflow-hidden">
                     {event.imageUrl ? (
                       <img
                         src={event.imageUrl}
                         alt={event.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500/10 to-cyan-500/10">
                         <svg
-                          className="w-12 h-12 text-[#333]"
+                          className="w-16 h-16 text-white/10"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -142,8 +159,11 @@ export default function Events() {
                         </svg>
                       </div>
                     )}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent" />
+                    
                     {/* Badges overlay on image */}
-                    <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
+                    <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
                       <span className={`badge ${getBadgeClass(event.type)}`}>
                         {eventTypeLabels[event.type]}
                       </span>
@@ -159,86 +179,92 @@ export default function Events() {
                     </div>
                   </div>
 
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-                  <p className="text-[#a3a3a3] text-sm mb-4 line-clamp-2">
-                    {event.description}
-                  </p>
+                  <div className="p-6 relative">
+                    <h3 className="text-xl font-semibold mb-3 group-hover:text-purple-300 transition-colors">{event.title}</h3>
+                    <p className="text-[#a3a3a3] text-sm mb-5 line-clamp-2">
+                      {event.description}
+                    </p>
 
-                  <div className="space-y-2 text-sm text-[#737373]">
-                    <div className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                      <span>
-                        {new Date(event.date).toLocaleDateString("en-US", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </span>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-purple-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
+                        <span>
+                          {new Date(event.date).toLocaleDateString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-cyan-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        <span>{event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-pink-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                        </div>
+                        <span>{event.location}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span>{event.time}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      <span>{event.location}</span>
-                    </div>
-                  </div>
 
                     {event.status === "upcoming" && event.lumaUrl && (
                       <a
                         href={event.lumaUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-white hover:text-[#a78bfa] transition-colors"
+                        className="mt-6 inline-flex items-center gap-2 text-sm font-medium bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity group/link"
                       >
                         Register on Luma
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 text-purple-400 transition-transform group-hover/link:translate-x-1"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -256,8 +282,14 @@ export default function Events() {
                 </motion.div>
               ))
             ) : (
-              <div className="col-span-2 text-center py-12 text-[#737373]">
-                <p>No {showUpcoming ? "upcoming" : "past"} events found.</p>
+              <div className="col-span-2 text-center py-16">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-[#737373]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-[#737373]">No {showUpcoming ? "upcoming" : "past"} events found.</p>
+                <p className="text-[#555] text-sm mt-2">Check back soon for more events!</p>
               </div>
             )}
           </motion.div>
@@ -268,17 +300,17 @@ export default function Events() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-16"
         >
           <a
             href={communityLinks.luma}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[#a3a3a3] hover:text-white transition-colors"
+            className="group inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 text-[#a3a3a3] hover:text-white hover:border-purple-500/30 hover:bg-purple-500/5 transition-all duration-300"
           >
             View all events on Luma
             <svg
-              className="w-4 h-4"
+              className="w-4 h-4 transition-transform group-hover:translate-x-1"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

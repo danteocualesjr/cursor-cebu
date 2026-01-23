@@ -45,49 +45,58 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-[#1f1f1f] bg-[#0a0a0a]">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+    <footer className="relative border-t border-white/5 bg-[#0a0a0a]">
+      {/* Gradient line at top */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+      
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        <div className="grid md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-4">
-              <Image
-                src="/cursor-logo.png"
-                alt="Cursor Logo"
-                width={32}
-                height={32}
-              />
-              <span className="font-mono text-base font-semibold">
-                Cursor <span className="text-[#737373]">Cebu</span>
+            <Link href="/" className="group flex items-center gap-3 mb-6">
+              <div className="relative">
+                <div className="absolute inset-0 bg-purple-500/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Image
+                  src="/cursor-logo.png"
+                  alt="Cursor Logo"
+                  width={40}
+                  height={40}
+                  className="relative"
+                />
+              </div>
+              <span className="font-mono text-lg font-semibold">
+                Cursor <span className="text-[#737373] group-hover:text-purple-400 transition-colors">Cebu</span>
               </span>
             </Link>
-            <p className="text-[#a3a3a3] text-sm max-w-sm mb-4">
+            <p className="text-[#a3a3a3] text-sm max-w-sm mb-6 leading-relaxed">
               The Cebu community for AI-powered developers. Learn, connect, and
               build with Cursor and other AI development tools.
             </p>
             {/* Built with Cursor Badge */}
-            <div className="inline-flex items-center gap-2 text-xs text-[#737373] bg-[#111] border border-[#1f1f1f] rounded-full px-3 py-1.5">
+            <div className="group inline-flex items-center gap-2 text-xs text-[#737373] bg-white/5 border border-white/5 rounded-full px-4 py-2 hover:border-purple-500/30 hover:bg-purple-500/5 transition-all cursor-default">
               <span>Built with</span>
               <Image
                 src="/cursor-logo.png"
                 alt="Cursor"
                 width={16}
                 height={16}
+                className="transition-transform group-hover:scale-110"
               />
-              <span className="font-medium text-[#a3a3a3]">Cursor</span>
+              <span className="font-medium bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Cursor</span>
             </div>
           </div>
 
           {/* Navigation */}
           <div>
-            <h4 className="font-semibold text-sm mb-4">Navigate</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-sm mb-6 text-white">Navigate</h4>
+            <ul className="space-y-3">
               {navigation.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-sm text-[#a3a3a3] hover:text-white transition-colors"
+                    className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
                   >
+                    <span className="w-0 h-px bg-purple-500 group-hover:w-3 transition-all" />
                     {item.name}
                   </Link>
                 </li>
@@ -97,15 +106,16 @@ export default function Footer() {
 
           {/* Community */}
           <div>
-            <h4 className="font-semibold text-sm mb-4">Community</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-sm mb-6 text-white">Community</h4>
+            <ul className="space-y-3">
               <li>
                 <a
                   href={communityLinks.discord}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[#a3a3a3] hover:text-white transition-colors"
+                  className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
                 >
+                  <span className="w-0 h-px bg-[#5865F2] group-hover:w-3 transition-all" />
                   Discord
                 </a>
               </li>
@@ -114,8 +124,9 @@ export default function Footer() {
                   href={communityLinks.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[#a3a3a3] hover:text-white transition-colors"
+                  className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
                 >
+                  <span className="w-0 h-px bg-[#25D366] group-hover:w-3 transition-all" />
                   WhatsApp
                 </a>
               </li>
@@ -124,16 +135,18 @@ export default function Footer() {
                   href={communityLinks.luma}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-[#a3a3a3] hover:text-white transition-colors"
+                  className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
                 >
+                  <span className="w-0 h-px bg-[#FF5A5F] group-hover:w-3 transition-all" />
                   Luma Events
                 </a>
               </li>
               <li>
                 <a
                   href={`mailto:${communityLinks.email}`}
-                  className="text-sm text-[#a3a3a3] hover:text-white transition-colors"
+                  className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
                 >
+                  <span className="w-0 h-px bg-cyan-500 group-hover:w-3 transition-all" />
                   Contact Us
                 </a>
               </li>
@@ -142,26 +155,39 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-[#1f1f1f] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-sm text-[#737373]">
             &copy; {currentYear} Cursor Community Cebu. All rights reserved.
           </p>
 
           {/* Social Links */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {social.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#737373] hover:text-white transition-colors"
+                className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[#737373] hover:text-white hover:bg-white/10 transition-all"
                 aria-label={item.name}
               >
                 {item.icon}
               </a>
             ))}
           </div>
+        </div>
+        
+        {/* Back to top */}
+        <div className="mt-8 text-center">
+          <a 
+            href="#" 
+            className="inline-flex items-center gap-2 text-xs text-[#555] hover:text-[#737373] transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+            Back to top
+          </a>
         </div>
       </div>
     </footer>

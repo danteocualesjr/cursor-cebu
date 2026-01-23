@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
@@ -14,52 +14,73 @@ const navItems = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-[#1f1f1f]">
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? "bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.3)]" 
+          : "bg-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <Image
-              src="/cursor-logo.png"
-              alt="Cursor Logo"
-              width={36}
-              height={36}
-              className="transition-transform group-hover:scale-105"
-            />
+            <div className="relative">
+              <div className="absolute inset-0 bg-purple-500/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Image
+                src="/cursor-logo.png"
+                alt="Cursor Logo"
+                width={36}
+                height={36}
+                className="relative transition-transform group-hover:scale-110"
+              />
+            </div>
             <span className="font-mono text-sm sm:text-base font-semibold tracking-tight">
-              Cursor <span className="text-[#737373]">Cebu</span>
+              Cursor <span className="text-[#737373] group-hover:text-purple-400 transition-colors">Cebu</span>
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-sm text-[#a3a3a3] hover:text-white transition-colors font-medium"
+                className="relative px-4 py-2 text-sm text-[#a3a3a3] hover:text-white transition-colors font-medium group"
               >
-                {item.label}
+                <span className="relative z-10">{item.label}</span>
+                <span className="absolute inset-0 bg-white/5 rounded-lg scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all" />
               </Link>
             ))}
             <Link
               href="#contact"
-              className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-[#e5e5e5] transition-colors"
+              className="ml-4 relative group bg-white text-black px-5 py-2.5 rounded-full text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)]"
             >
-              Join Community
+              <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative z-10 group-hover:text-white transition-colors">Join Community</span>
             </Link>
           </nav>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-[#a3a3a3] hover:text-white"
+            className="md:hidden relative p-2 text-[#a3a3a3] hover:text-white transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
+            <div className="absolute inset-0 bg-white/5 rounded-lg opacity-0 hover:opacity-100 transition-opacity" />
             <svg
-              className="w-6 h-6"
+              className="w-6 h-6 relative"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -91,26 +112,39 @@ export default function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#0a0a0a] border-b border-[#1f1f1f]"
+            className="md:hidden bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/5"
           >
-            <nav className="flex flex-col px-4 py-4 gap-4">
-              {navItems.map((item) => (
-                <Link
+            <nav className="flex flex-col px-4 py-6 gap-2">
+              {navItems.map((item, index) => (
+                <motion.div
                   key={item.label}
-                  href={item.href}
-                  className="text-[#a3a3a3] hover:text-white transition-colors py-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Link
+                    href={item.href}
+                    className="block text-[#a3a3a3] hover:text-white hover:bg-white/5 transition-all py-3 px-4 rounded-lg"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                </motion.div>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: navItems.length * 0.05 }}
+                className="mt-4"
+              >
+                <Link
+                  href="#contact"
+                  className="block bg-white text-black px-4 py-3 rounded-full text-sm font-medium text-center hover:bg-[#e5e5e5] transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.label}
+                  Join Community
                 </Link>
-              ))}
-              <Link
-                href="#contact"
-                className="bg-white text-black px-4 py-2 rounded-full text-sm font-medium text-center hover:bg-[#e5e5e5] transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Join Community
-              </Link>
+              </motion.div>
             </nav>
           </motion.div>
         )}
