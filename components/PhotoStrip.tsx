@@ -44,7 +44,10 @@ export default function PhotoStrip() {
         {duplicatedPhotos.map((photo, index) => (
           <div
             key={`${photo.id}-${index}`}
-            className="group relative flex-shrink-0 w-56 h-36 sm:w-72 sm:h-44 rounded-xl overflow-hidden bg-[#111] border border-white/5 transition-all duration-300 hover:border-purple-500/30 hover:scale-105"
+            className="group relative flex-shrink-0 w-56 h-36 sm:w-72 sm:h-44 rounded-xl overflow-hidden bg-[#111] border border-white/5 transition-all duration-300 hover:border-purple-500/30 hover:scale-105 focus-within:border-purple-500/30 focus-within:scale-105"
+            tabIndex={0}
+            role="img"
+            aria-label={photo.alt}
           >
             <Image
               src={photo.src}
@@ -52,11 +55,12 @@ export default function PhotoStrip() {
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
               sizes="(max-width: 640px) 224px, 288px"
+              loading="lazy"
             />
             {/* Hover overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300" />
             {/* Caption on hover */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+            <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0 transition-transform duration-300">
               <p className="text-xs text-white/80 font-medium">{photo.alt}</p>
             </div>
           </div>

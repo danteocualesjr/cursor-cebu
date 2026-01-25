@@ -10,8 +10,11 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
+      <a href="#main-content" className="skip-to-main">
+        Skip to main content
+      </a>
       <Header />
-      <main>
+      <main id="main-content">
         <Hero />
         <PhotoStrip />
         <Events />

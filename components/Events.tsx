@@ -68,11 +68,14 @@ export default function Events() {
         </motion.div>
 
         {/* Toggle: Upcoming / Past */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-8" role="tablist" aria-label="Filter events by status">
           <div className="inline-flex bg-[#111]/80 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
             <button
               onClick={() => setShowUpcoming(true)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              role="tab"
+              aria-selected={showUpcoming}
+              aria-controls="events-grid"
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
                 showUpcoming
                   ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
                   : "text-[#a3a3a3] hover:text-white"
@@ -82,7 +85,10 @@ export default function Events() {
             </button>
             <button
               onClick={() => setShowUpcoming(false)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              role="tab"
+              aria-selected={!showUpcoming}
+              aria-controls="events-grid"
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
                 !showUpcoming
                   ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
                   : "text-[#a3a3a3] hover:text-white"
@@ -94,16 +100,17 @@ export default function Events() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-12" role="group" aria-label="Filter events by type">
           {filterOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => setFilter(option.value)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
                 filter === option.value
                   ? "border-purple-500/50 text-white bg-purple-500/20 shadow-lg shadow-purple-500/10"
                   : "border-white/10 text-[#a3a3a3] hover:border-white/20 hover:text-white hover:bg-white/5"
               }`}
+              aria-pressed={filter === option.value}
             >
               {option.label}
             </button>
@@ -119,15 +126,19 @@ export default function Events() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
             className="grid md:grid-cols-2 gap-8"
+            id="events-grid"
+            role="region"
+            aria-live="polite"
+            aria-label={`${showUpcoming ? "Upcoming" : "Past"} events${filter !== "all" ? ` filtered by ${filterOptions.find(o => o.value === filter)?.label}` : ""}`}
           >
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
-                <motion.div
+                <motion.article
                   key={event.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)]"
+                  className="group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)] focus-within:border-purple-500/30 focus-within:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)]"
                 >
                   {/* Gradient border on hover */}
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
@@ -260,7 +271,8 @@ export default function Events() {
                         href={event.lumaUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-6 inline-flex items-center gap-2 text-sm font-medium bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity group/link"
+                        className="mt-6 inline-flex items-center gap-2 text-sm font-medium bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity group/link focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111] rounded"
+                        aria-label={`Register for ${event.title} on Luma`}
                       >
                         Register on Luma
                         <svg
@@ -268,6 +280,7 @@ export default function Events() {
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
+                          aria-hidden="true"
                         >
                           <path
                             strokeLinecap="round"
@@ -279,12 +292,12 @@ export default function Events() {
                       </a>
                     )}
                   </div>
-                </motion.div>
+                </motion.article>
               ))
             ) : (
-              <div className="col-span-2 text-center py-16">
+              <div className="col-span-2 text-center py-16" role="status" aria-live="polite">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-[#737373]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-[#737373]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>

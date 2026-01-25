@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -46,6 +46,28 @@ const photos = [
 export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!selectedImage) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedImage(null);
+      } else if (e.key === "ArrowLeft") {
+        const currentIndex = photos.findIndex((p) => p.id === selectedImage);
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : photos.length - 1;
+        setSelectedImage(photos[prevIndex].id);
+      } else if (e.key === "ArrowRight") {
+        const currentIndex = photos.findIndex((p) => p.id === selectedImage);
+        const nextIndex = currentIndex < photos.length - 1 ? currentIndex + 1 : 0;
+        setSelectedImage(photos[nextIndex].id);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage]);
+
   return (
     <section id="gallery" className="relative py-24 px-4">
       {/* Background effects */}
@@ -85,16 +107,17 @@ export default function Gallery() {
           className="grid grid-cols-2 md:grid-cols-3 gap-5"
         >
           {photos.map((photo, index) => (
-            <motion.div
+            <motion.button
               key={photo.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className={`relative bg-[#111] border border-white/5 rounded-2xl overflow-hidden cursor-pointer group ${
+              className={`relative bg-[#111] border border-white/5 rounded-2xl overflow-hidden cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
                 index === 0 || index === 3 ? "aspect-[4/5]" : "aspect-square"
               }`}
               onClick={() => setSelectedImage(photo.id)}
+              aria-label={`View ${photo.alt} - ${photo.event}`}
             >
               <Image
                 src={photo.src}
@@ -124,7 +147,7 @@ export default function Gallery() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
                 </svg>
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </motion.div>
 
@@ -137,6 +160,9 @@ export default function Gallery() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4"
               onClick={() => setSelectedImage(null)}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Image lightbox"
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -163,16 +189,52 @@ export default function Gallery() {
                   </>
                 )}
 
+                {/* Navigation Buttons */}
+                {photos.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const currentIndex = photos.findIndex((p) => p.id === selectedImage);
+                        const prevIndex = currentIndex > 0 ? currentIndex - 1 : photos.length - 1;
+                        setSelectedImage(photos[prevIndex].id);
+                      }}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                      aria-label="Previous image"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const currentIndex = photos.findIndex((p) => p.id === selectedImage);
+                        const nextIndex = currentIndex < photos.length - 1 ? currentIndex + 1 : 0;
+                        setSelectedImage(photos[nextIndex].id);
+                      }}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                      aria-label="Next image"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+                
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedImage(null)}
-                  className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                  className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                  aria-label="Close lightbox"
                 >
                   <svg
                     className="w-6 h-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -184,9 +246,17 @@ export default function Gallery() {
                 </button>
                 
                 {/* Navigation hint */}
-                <div className="absolute bottom-6 right-6 text-sm text-[#737373]">
-                  Click outside to close
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm text-[#737373] text-center">
+                  <span className="hidden sm:inline">Use arrow keys to navigate • </span>
+                  <span>Click outside or press ESC to close</span>
                 </div>
+                
+                {/* Image counter */}
+                {photos.length > 1 && (
+                  <div className="absolute top-4 left-4 text-sm text-white/80 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    {photos.findIndex((p) => p.id === selectedImage) + 1} / {photos.length}
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           )}

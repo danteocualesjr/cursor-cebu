@@ -94,7 +94,23 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors"
+                    onClick={(e) => {
+                      if (item.href.startsWith("#")) {
+                        e.preventDefault();
+                        const element = document.querySelector(item.href);
+                        if (element) {
+                          const headerOffset = 80;
+                          const elementPosition = element.getBoundingClientRect().top;
+                          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                          window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth",
+                          });
+                        }
+                      }
+                    }}
+                    className="group flex items-center gap-2 text-sm text-[#a3a3a3] hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] rounded"
+                    aria-label={`Navigate to ${item.name} section`}
                   >
                     <span className="w-0 h-px bg-purple-500 group-hover:w-3 transition-all" />
                     {item.name}
@@ -168,8 +184,8 @@ export default function Footer() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[#737373] hover:text-white hover:bg-white/10 transition-all"
-                aria-label={item.name}
+                className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-[#737373] hover:text-white hover:bg-white/10 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+                aria-label={`Visit our ${item.name} page`}
               >
                 {item.icon}
               </a>
@@ -180,10 +196,15 @@ export default function Footer() {
         {/* Back to top */}
         <div className="mt-8 text-center">
           <a 
-            href="#" 
-            className="inline-flex items-center gap-2 text-xs text-[#555] hover:text-[#737373] transition-colors"
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className="inline-flex items-center gap-2 text-xs text-[#555] hover:text-[#737373] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] rounded"
+            aria-label="Back to top"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
             </svg>
             Back to top
