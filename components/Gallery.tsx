@@ -77,26 +77,39 @@ export default function Gallery() {
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center mb-16"
         >
           <motion.span 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-block text-pink-400 text-sm font-medium tracking-wider uppercase mb-4"
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="inline-block text-pink-400 text-sm font-medium tracking-wider uppercase mb-4 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20"
           >
             Community Moments
           </motion.span>
-          <h2 className="text-4xl sm:text-5xl font-bold font-mono mb-6">
-            <span className="gradient-text-accent">Gallery</span>
-          </h2>
-          <p className="text-[#a3a3a3] max-w-2xl mx-auto text-lg">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-4xl sm:text-5xl font-bold font-mono mb-6"
+          >
+            <span className="gradient-text-accent animate-gradient">Gallery</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-[#a3a3a3] max-w-2xl mx-auto text-lg"
+          >
             Moments captured from our workshops, meetups, and community events.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Photo Grid - Masonry-like layout */}

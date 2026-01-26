@@ -44,27 +44,40 @@ export default function Events() {
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center mb-16"
         >
           <motion.span 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-block text-purple-400 text-sm font-medium tracking-wider uppercase mb-4"
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="inline-block text-purple-400 text-sm font-medium tracking-wider uppercase mb-4 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20"
           >
             What&apos;s Happening
           </motion.span>
-          <h2 className="text-4xl sm:text-5xl font-bold font-mono mb-6">
-            <span className="gradient-text-accent">Events</span>
-          </h2>
-          <p className="text-[#a3a3a3] max-w-2xl mx-auto text-lg">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-4xl sm:text-5xl font-bold font-mono mb-6"
+          >
+            <span className="gradient-text-accent animate-gradient">Events</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-[#a3a3a3] max-w-2xl mx-auto text-lg"
+          >
             Join our workshops, meetups, hackathons, and Cafe Cursor sessions.
             Learn, connect, and build with AI-powered tools.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Toggle: Upcoming / Past */}
@@ -138,7 +151,7 @@ export default function Events() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)] focus-within:border-purple-500/30 focus-within:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)]"
+                  className="group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)] hover:-translate-y-2 focus-within:border-purple-500/30 focus-within:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.2)] card-glow"
                 >
                   {/* Gradient border on hover */}
                   <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
@@ -148,11 +161,15 @@ export default function Events() {
                   {/* Event Image */}
                   <div className="h-48 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] relative overflow-hidden">
                     {event.imageUrl ? (
-                      <img
-                        src={event.imageUrl}
-                        alt={event.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+                      <div className="relative w-full h-full">
+                        <img
+                          src={event.imageUrl}
+                          alt={event.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      </div>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500/10 to-cyan-500/10">
                         <svg

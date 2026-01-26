@@ -57,27 +57,40 @@ export default function CommunityLinks() {
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="text-center mb-16"
         >
           <motion.span 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-block text-green-400 text-sm font-medium tracking-wider uppercase mb-4"
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="inline-block text-green-400 text-sm font-medium tracking-wider uppercase mb-4 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20"
           >
             Connect With Us
           </motion.span>
-          <h2 className="text-4xl sm:text-5xl font-bold font-mono mb-6">
-            <span className="gradient-text-accent">Join the Community</span>
-          </h2>
-          <p className="text-[#a3a3a3] max-w-2xl mx-auto text-lg">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-4xl sm:text-5xl font-bold font-mono mb-6"
+          >
+            <span className="gradient-text-accent animate-gradient">Join the Community</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-[#a3a3a3] max-w-2xl mx-auto text-lg"
+          >
             Connect with fellow AI-powered developers in Cebu. Join our
             community channels to stay updated and engaged.
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Community Links Grid */}
@@ -92,7 +105,7 @@ export default function CommunityLinks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className={`group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-8 text-center transition-all duration-500 ${link.hoverBg} ${link.hoverBorder} hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.15)] focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808]`}
+              className={`group relative bg-[#111]/80 backdrop-blur-sm border border-white/5 rounded-2xl p-8 text-center transition-all duration-500 ${link.hoverBg} ${link.hoverBorder} hover:shadow-[0_20px_60px_-15px_rgba(124,58,237,0.15)] hover:-translate-y-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808] card-glow`}
               aria-label={`Join ${link.name} - ${link.description}`}
             >
               {/* Gradient glow on hover */}

@@ -1,7 +1,101 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 import { communityLinks } from "@/data/links";
+
+// Ripple button component
+function RippleButton({ children, className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now();
+    
+    setRipples((prev) => [...prev, { x, y, id }]);
+    
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
+    }, 600);
+    
+    if (props.onClick) {
+      props.onClick(e);
+    }
+  };
+
+  return (
+    <a {...props} className={className} onClick={handleClick}>
+      {children}
+      {ripples.map((ripple) => (
+        <motion.span
+          key={ripple.id}
+          className="absolute rounded-full bg-white/30 pointer-events-none"
+          style={{
+            left: ripple.x,
+            top: ripple.y,
+            width: 0,
+            height: 0,
+          }}
+          animate={{
+            width: 300,
+            height: 300,
+            opacity: [0.5, 0],
+          }}
+          transition={{ duration: 0.6 }}
+        />
+      ))}
+    </a>
+  );
+}
+
+// Animated counter component
+function StatCounter({ value, suffix, label, delay }: { value: number; suffix: string; label: string; delay: number }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (!isInView) return;
+    
+    const duration = 2000;
+    const steps = 60;
+    const increment = value / steps;
+    const stepDuration = duration / steps;
+    
+    let current = 0;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= value) {
+        setCount(value);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, stepDuration);
+
+    return () => clearInterval(timer);
+  }, [isInView, value]);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.6 }}
+      className="relative group"
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="relative px-6 py-4">
+        <div className="text-4xl sm:text-5xl font-bold font-mono gradient-text-accent">
+          {count}{suffix}
+        </div>
+        <div className="text-sm text-[#737373] mt-2 uppercase tracking-wider">{label}</div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Hero() {
   return (
@@ -11,8 +105,67 @@ export default function Hero() {
       <div className="absolute inset-0 bg-radial" />
       
       {/* Animated gradient orbs */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px] animate-pulse" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-[128px] animate-pulse" style={{ animationDelay: '1s' }} />
+      <motion.div 
+        className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px]"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div 
+        className="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-[128px]"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+      />
+      <motion.div 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/10 rounded-full blur-[100px]"
+        animate={{
+          scale: [1, 1.4, 1],
+          opacity: [0.2, 0.4, 0.2],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
+      />
+      
+      {/* Floating particles */}
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-purple-400/30 rounded-full"
+          style={{
+            left: `${20 + i * 15}%`,
+            top: `${30 + (i % 3) * 20}%`,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: 3 + i * 0.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: i * 0.3,
+          }}
+        />
+      ))}
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -85,7 +238,7 @@ export default function Hero() {
           transition={{ delay: 0.5, duration: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <a
+          <RippleButton
             href={communityLinks.discord}
             target="_blank"
             rel="noopener noreferrer"
@@ -97,7 +250,7 @@ export default function Hero() {
               <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
             </svg>
             <span className="relative z-10 group-hover:text-white transition-colors">Join Discord</span>
-          </a>
+          </RippleButton>
           <a
             href="#events"
             onClick={(e) => {
@@ -142,23 +295,17 @@ export default function Hero() {
           className="mt-16 flex flex-wrap items-center justify-center gap-8 sm:gap-16 text-center"
         >
           {[
-            { value: "100+", label: "Community Members" },
-            { value: "10+", label: "Events Held" },
-            { value: "5+", label: "Workshops" },
+            { value: 100, suffix: "+", label: "Community Members" },
+            { value: 10, suffix: "+", label: "Events Held" },
+            { value: 5, suffix: "+", label: "Workshops" },
           ].map((stat, index) => (
-            <motion.div
+            <StatCounter
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 + index * 0.1 }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative px-6 py-4">
-                <div className="text-4xl sm:text-5xl font-bold font-mono gradient-text-accent">{stat.value}</div>
-                <div className="text-sm text-[#737373] mt-2 uppercase tracking-wider">{stat.label}</div>
-              </div>
-            </motion.div>
+              value={stat.value}
+              suffix={stat.suffix}
+              label={stat.label}
+              delay={0.9 + index * 0.1}
+            />
           ))}
         </motion.div>
 
@@ -172,12 +319,31 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2 text-[#737373]"
+            className="flex flex-col items-center gap-2 text-[#737373] group/scroll cursor-pointer"
+            onClick={() => {
+              const eventsSection = document.querySelector("#events");
+              if (eventsSection) {
+                const headerOffset = 80;
+                const elementPosition = eventsSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
+              }
+            }}
           >
-            <span className="text-xs uppercase tracking-widest">Scroll</span>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="text-xs uppercase tracking-widest group-hover/scroll:text-white transition-colors">Scroll</span>
+            <motion.svg 
+              className="w-5 h-5 group-hover/scroll:text-purple-400 transition-colors" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+            </motion.svg>
           </motion.div>
         </motion.div>
       </motion.div>
