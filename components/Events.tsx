@@ -25,6 +25,16 @@ export default function Events() {
     return matchesType && matchesStatus;
   });
 
+  // Count events by type for badges
+  const getEventCount = (type: EventType | "all") => {
+    if (type === "all") {
+      return events.filter(e => showUpcoming ? e.status === "upcoming" : e.status === "past").length;
+    }
+    return events.filter(e => 
+      e.type === type && (showUpcoming ? e.status === "upcoming" : e.status === "past")
+    ).length;
+  };
+
   const getBadgeClass = (type: EventType) => {
     const classes: Record<EventType, string> = {
       workshop: "badge-workshop",
@@ -81,16 +91,38 @@ export default function Events() {
         </motion.div>
 
         {/* Toggle: Upcoming / Past */}
-        <div className="flex justify-center mb-8" role="tablist" aria-label="Filter events by status">
-          <div className="inline-flex bg-[#111]/80 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
+        <motion.div 
+          className="flex justify-center mb-8" 
+          role="tablist" 
+          aria-label="Filter events by status"
+          initial={{ opacity: 0, y: -10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="relative inline-flex bg-[#111]/80 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
+            {/* Animated background slider */}
+            <motion.div
+              className="absolute inset-y-1.5 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 shadow-lg shadow-purple-500/25"
+              initial={false}
+              animate={{
+                left: showUpcoming ? "0.375rem" : "50%",
+                right: showUpcoming ? "50%" : "0.375rem",
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              }}
+            />
             <button
               onClick={() => setShowUpcoming(true)}
               role="tab"
               aria-selected={showUpcoming}
               aria-controls="events-grid"
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+              className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
                 showUpcoming
-                  ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
+                  ? "text-white"
                   : "text-[#a3a3a3] hover:text-white"
               }`}
             >
@@ -101,34 +133,72 @@ export default function Events() {
               role="tab"
               aria-selected={!showUpcoming}
               aria-controls="events-grid"
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+              className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
                 !showUpcoming
-                  ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
+                  ? "text-white"
                   : "text-[#a3a3a3] hover:text-white"
               }`}
             >
               Past Events
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12" role="group" aria-label="Filter events by type">
-          {filterOptions.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => setFilter(option.value)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
-                filter === option.value
-                  ? "border-purple-500/50 text-white bg-purple-500/20 shadow-lg shadow-purple-500/10"
-                  : "border-white/10 text-[#a3a3a3] hover:border-white/20 hover:text-white hover:bg-white/5"
-              }`}
-              aria-pressed={filter === option.value}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
+        <motion.div 
+          className="flex flex-wrap justify-center gap-3 mb-12" 
+          role="group" 
+          aria-label="Filter events by type"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
+          {filterOptions.map((option, index) => {
+            const count = getEventCount(option.value);
+            return (
+              <motion.button
+                key={option.value}
+                onClick={() => setFilter(option.value)}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05, duration: 0.3 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+                  filter === option.value
+                    ? "border-purple-500/50 text-white bg-purple-500/20 shadow-lg shadow-purple-500/10"
+                    : "border-white/10 text-[#a3a3a3] hover:border-white/20 hover:text-white hover:bg-white/5"
+                }`}
+                aria-pressed={filter === option.value}
+              >
+                <span className="relative z-10">{option.label}</span>
+                {count > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      filter === option.value
+                        ? "bg-white/20 text-white"
+                        : "bg-white/10 text-[#a3a3a3]"
+                    }`}
+                  >
+                    {count}
+                  </motion.span>
+                )}
+                {filter === option.value && (
+                  <motion.div
+                    layoutId="activeFilter"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
+        </motion.div>
 
         {/* Events Grid */}
         <AnimatePresence mode="wait">
@@ -191,19 +261,29 @@ export default function Events() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent" />
                     
                     {/* Badges overlay on image */}
-                    <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
-                      <span className={`badge ${getBadgeClass(event.type)}`}>
+                    <div className="absolute top-4 left-4 right-4 flex items-start justify-between z-10">
+                      <motion.span 
+                        className={`badge ${getBadgeClass(event.type)}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 + 0.2 }}
+                        whileHover={{ scale: 1.05 }}
+                      >
                         {eventTypeLabels[event.type]}
-                      </span>
-                      <span
+                      </motion.span>
+                      <motion.span
                         className={`badge ${
                           event.status === "upcoming"
                             ? "badge-upcoming"
                             : "badge-past"
                         }`}
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 + 0.2 }}
+                        whileHover={{ scale: 1.05 }}
                       >
                         {event.status === "upcoming" ? "Upcoming" : "Past"}
-                      </span>
+                      </motion.span>
                     </div>
                   </div>
 
@@ -214,8 +294,16 @@ export default function Events() {
                     </p>
 
                     <div className="space-y-3 text-sm">
-                      <div className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors">
-                        <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                      <motion.div 
+                        className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors"
+                        whileHover={{ x: 4 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <motion.div 
+                          className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors"
+                          whileHover={{ rotate: 360, scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                        >
                           <svg
                             className="w-4 h-4 text-purple-400"
                             fill="none"
@@ -229,7 +317,7 @@ export default function Events() {
                               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                             />
                           </svg>
-                        </div>
+                        </motion.div>
                         <span>
                           {new Date(event.date).toLocaleDateString("en-US", {
                             weekday: "long",
@@ -238,9 +326,17 @@ export default function Events() {
                             day: "numeric",
                           })}
                         </span>
-                      </div>
-                      <div className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors">
-                        <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                      </motion.div>
+                      <motion.div 
+                        className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors"
+                        whileHover={{ x: 4 }}
+                        transition={{ type: "spring", stiffness: 300, delay: 0.05 }}
+                      >
+                        <motion.div 
+                          className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors"
+                          whileHover={{ rotate: 360, scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                        >
                           <svg
                             className="w-4 h-4 text-cyan-400"
                             fill="none"
@@ -254,11 +350,19 @@ export default function Events() {
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                        </div>
+                        </motion.div>
                         <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors">
-                        <div className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center">
+                      </motion.div>
+                      <motion.div 
+                        className="flex items-center gap-3 text-[#737373] group-hover:text-[#a3a3a3] transition-colors"
+                        whileHover={{ x: 4 }}
+                        transition={{ type: "spring", stiffness: 300, delay: 0.1 }}
+                      >
+                        <motion.div 
+                          className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center group-hover:bg-pink-500/20 transition-colors"
+                          whileHover={{ rotate: 360, scale: 1.1 }}
+                          transition={{ duration: 0.5 }}
+                        >
                           <svg
                             className="w-4 h-4 text-pink-400"
                             fill="none"
@@ -278,26 +382,38 @@ export default function Events() {
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                        </div>
+                        </motion.div>
                         <span>{event.location}</span>
-                      </div>
+                      </motion.div>
                     </div>
 
                     {event.status === "upcoming" && event.lumaUrl && (
-                      <a
+                      <motion.a
                         href={event.lumaUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-6 inline-flex items-center gap-2 text-sm font-medium bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity group/link focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111] rounded"
                         aria-label={`Register for ${event.title} on Luma`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        Register on Luma
-                        <svg
-                          className="w-4 h-4 text-purple-400 transition-transform group-hover/link:translate-x-1"
+                        <span className="relative">
+                          Register on Luma
+                          <motion.span
+                            className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500 to-cyan-500"
+                            initial={{ scaleX: 0 }}
+                            whileHover={{ scaleX: 1 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        </span>
+                        <motion.svg
+                          className="w-4 h-4 text-purple-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
                           aria-hidden="true"
+                          animate={{ x: [0, 4, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                         >
                           <path
                             strokeLinecap="round"
@@ -305,22 +421,66 @@ export default function Events() {
                             strokeWidth={2}
                             d="M14 5l7 7m0 0l-7 7m7-7H3"
                           />
-                        </svg>
-                      </a>
+                        </motion.svg>
+                      </motion.a>
                     )}
                   </div>
                 </motion.article>
               ))
             ) : (
-              <div className="col-span-2 text-center py-16" role="status" aria-live="polite">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+              <motion.div 
+                className="col-span-2 text-center py-16" 
+                role="status" 
+                aria-live="polite"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4 }}
+              >
+                <motion.div 
+                  className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center"
+                  animate={{ 
+                    rotate: [0, 10, -10, 10, -10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    rotate: { duration: 0.5, delay: 0.2 },
+                    scale: { duration: 0.3, delay: 0.7 }
+                  }}
+                >
                   <svg className="w-8 h-8 text-[#737373]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                </div>
-                <p className="text-[#737373]">No {showUpcoming ? "upcoming" : "past"} events found.</p>
-                <p className="text-[#555] text-sm mt-2">Check back soon for more events!</p>
-              </div>
+                </motion.div>
+                <motion.p 
+                  className="text-[#737373] text-lg font-medium"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  No {showUpcoming ? "upcoming" : "past"} events found.
+                </motion.p>
+                <motion.p 
+                  className="text-[#555] text-sm mt-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  Check back soon for more events!
+                </motion.p>
+                <motion.div
+                  className="mt-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <button
+                    onClick={() => setFilter("all")}
+                    className="text-sm text-purple-400 hover:text-purple-300 transition-colors underline underline-offset-4"
+                  >
+                    View all events
+                  </button>
+                </motion.div>
+              </motion.div>
             )}
           </motion.div>
         </AnimatePresence>
