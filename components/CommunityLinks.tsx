@@ -1,7 +1,113 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { communityLinks } from "@/data/links";
+
+// Newsletter signup component
+function NewsletterSignup() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setStatus("loading");
+    // Simulate API call - in production, connect to your newsletter service
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setStatus("success");
+    setEmail("");
+    setTimeout(() => setStatus("idle"), 3000);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="relative overflow-hidden bg-[#111] border border-white/10 rounded-2xl p-8 mb-8"
+    >
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+      
+      <div className="relative z-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+            <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-white">Stay Updated</h3>
+            <p className="text-sm text-[#737373]">Get notified about upcoming events</p>
+          </div>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-[#737373] focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              disabled={status === "loading" || status === "success"}
+              required
+            />
+            {status === "success" && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center"
+              >
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </motion.div>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={status === "loading" || status === "success"}
+            className="group relative px-6 py-3 bg-white text-black rounded-xl font-medium overflow-hidden transition-all hover:shadow-[0_0_20px_rgba(124,58,237,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="relative z-10 group-hover:text-white transition-colors flex items-center gap-2">
+              {status === "loading" ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Subscribing...
+                </>
+              ) : status === "success" ? (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Subscribed!
+                </>
+              ) : (
+                <>
+                  Subscribe
+                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </>
+              )}
+            </span>
+          </button>
+        </form>
+        
+        <p className="text-xs text-[#555] mt-3">
+          We respect your privacy. Unsubscribe anytime.
+        </p>
+      </div>
+    </motion.div>
+  );
+}
 
 const links = [
   {
@@ -92,6 +198,9 @@ export default function CommunityLinks() {
             community channels to stay updated and engaged.
           </motion.p>
         </motion.div>
+
+        {/* Newsletter Signup */}
+        <NewsletterSignup />
 
         {/* Community Links Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-20">

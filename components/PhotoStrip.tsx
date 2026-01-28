@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 import Image from "next/image";
 
 const stripPhotos = [
@@ -14,11 +15,46 @@ const stripPhotos = [
 ];
 
 export default function PhotoStrip() {
+  const [isPaused, setIsPaused] = useState(false);
+  const controls = useAnimationControls();
+  const containerRef = useRef<HTMLDivElement>(null);
+  
   // Triple the photos for seamless infinite scroll
   const duplicatedPhotos = [...stripPhotos, ...stripPhotos, ...stripPhotos];
 
+  useEffect(() => {
+    if (isPaused) {
+      controls.stop();
+    } else {
+      controls.start({
+        x: -50 * stripPhotos.length * 4.5,
+        transition: {
+          repeat: Infinity,
+          repeatType: "loop",
+          duration: 40,
+          ease: "linear",
+        },
+      });
+    }
+  }, [isPaused, controls]);
+
   return (
-    <div className="relative py-16 overflow-hidden bg-[#080808]">
+    <div 
+      ref={containerRef}
+      className="relative py-16 overflow-hidden bg-[#080808] group/strip"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Pause indicator */}
+      <div className={`absolute inset-0 z-20 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isPaused ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white/80 flex items-center gap-2">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+          </svg>
+          Paused
+        </div>
+      </div>
+      
       {/* Gradient fade edges */}
       <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#080808] to-transparent z-10 pointer-events-none" />
       <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#080808] to-transparent z-10 pointer-events-none" />
@@ -29,17 +65,8 @@ export default function PhotoStrip() {
       
       <motion.div
         className="flex gap-6"
-        animate={{
-          x: [0, -50 * stripPhotos.length * 4.5],
-        }}
-        transition={{
-          x: {
-            repeat: Infinity,
-            repeatType: "loop",
-            duration: 40,
-            ease: "linear",
-          },
-        }}
+        initial={{ x: 0 }}
+        animate={controls}
       >
         {duplicatedPhotos.map((photo, index) => (
           <div

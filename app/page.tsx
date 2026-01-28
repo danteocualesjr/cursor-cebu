@@ -6,6 +6,7 @@ import Speakers from "@/components/Speakers";
 import Gallery from "@/components/Gallery";
 import CommunityLinks from "@/components/CommunityLinks";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
         <CommunityLinks />
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }

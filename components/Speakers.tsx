@@ -57,16 +57,38 @@ export default function Speakers() {
         </motion.div>
 
         {/* Toggle: Past / Upcoming */}
-        <div className="flex justify-center mb-12" role="tablist" aria-label="Filter speakers by status">
-          <div className="inline-flex bg-[#111]/80 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
+        <motion.div 
+          className="flex justify-center mb-12" 
+          role="tablist" 
+          aria-label="Filter speakers by status"
+          initial={{ opacity: 0, y: -10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="relative inline-flex bg-[#111]/80 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
+            {/* Animated background slider */}
+            <motion.div
+              className="absolute inset-y-1.5 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 shadow-lg shadow-purple-500/25"
+              initial={false}
+              animate={{
+                left: showPast ? "0.375rem" : "50%",
+                right: showPast ? "50%" : "0.375rem",
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              }}
+            />
             <button
               onClick={() => setShowPast(true)}
               role="tab"
               aria-selected={showPast}
               aria-controls="speakers-grid"
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808] ${
+              className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808] ${
                 showPast
-                  ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
+                  ? "text-white"
                   : "text-[#a3a3a3] hover:text-white"
               }`}
             >
@@ -77,16 +99,16 @@ export default function Speakers() {
               role="tab"
               aria-selected={!showPast}
               aria-controls="speakers-grid"
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808] ${
+              className={`relative z-10 px-6 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808] ${
                 !showPast
-                  ? "bg-gradient-to-r from-purple-500 to-cyan-500 text-white shadow-lg shadow-purple-500/25"
+                  ? "text-white"
                   : "text-[#a3a3a3] hover:text-white"
               }`}
             >
               Upcoming
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Speakers Grid */}
         <motion.div

@@ -4,6 +4,45 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { communityLinks } from "@/data/links";
 
+// Typewriter effect component
+function TypewriterText({ words, className }: { words: string[]; className?: string }) {
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentText, setCurrentText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = words[currentWordIndex];
+    const timeout = setTimeout(
+      () => {
+        if (!isDeleting) {
+          if (currentText.length < word.length) {
+            setCurrentText(word.slice(0, currentText.length + 1));
+          } else {
+            setTimeout(() => setIsDeleting(true), 2000);
+          }
+        } else {
+          if (currentText.length > 0) {
+            setCurrentText(word.slice(0, currentText.length - 1));
+          } else {
+            setIsDeleting(false);
+            setCurrentWordIndex((prev) => (prev + 1) % words.length);
+          }
+        }
+      },
+      isDeleting ? 50 : 100
+    );
+
+    return () => clearTimeout(timeout);
+  }, [currentText, isDeleting, currentWordIndex, words]);
+
+  return (
+    <span className={className}>
+      {currentText}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+}
+
 // Ripple button component
 function RippleButton({ children, className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
@@ -217,7 +256,12 @@ export default function Hero() {
           className="text-lg sm:text-xl md:text-2xl text-[#a3a3a3] max-w-2xl mx-auto mb-4 font-light"
         >
           The Cebu community for{" "}
-          <span className="text-white font-medium">AI-powered developers</span>
+          <span className="text-white font-medium">
+            <TypewriterText 
+              words={["AI-powered developers", "code enthusiasts", "tech innovators", "creative builders"]}
+              className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
+            />
+          </span>
         </motion.p>
 
         {/* Subtitle */}

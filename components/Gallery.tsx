@@ -271,6 +271,38 @@ export default function Gallery() {
                   </div>
                 )}
               </motion.div>
+              
+              {/* Thumbnail strip */}
+              {photos.length > 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex justify-center gap-2 mt-4 px-4 overflow-x-auto max-w-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {photos.map((photo) => (
+                    <button
+                      key={photo.id}
+                      onClick={() => setSelectedImage(photo.id)}
+                      className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden transition-all duration-300 ${
+                        selectedImage === photo.id
+                          ? "ring-2 ring-purple-500 scale-110"
+                          : "opacity-50 hover:opacity-100"
+                      }`}
+                      aria-label={`View ${photo.alt}`}
+                    >
+                      <Image
+                        src={photo.src}
+                        alt={photo.alt}
+                        fill
+                        className="object-cover"
+                        sizes="80px"
+                      />
+                    </button>
+                  ))}
+                </motion.div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
